@@ -110,5 +110,50 @@ Chaque compétition possède un ID qui permet d'accèder aux informations la con
                 }
             },
       ```
-
- 
+      * Récupérer les matchs d'un jour d'une compétition selon son ID et une date (format : [YYYY-MM-DD]) : https://api-football-v1.p.rapidapi.com/v2/fixtures/league/{league_id}/{date}
+      * Aperçu de l'architecture :
+      
+      ```json
+      {
+    "api": {
+        "results": 6,
+        "fixtures": [
+            {
+                "fixture_id": 157615,
+                "league_id": 525,
+                "league": {
+                    "name": "Ligue 1",
+                    "country": "France",
+                    "logo": "https://media.api-football.com/leagues/4.svg",
+                    "flag": "https://media.api-football.com/flags/fr.svg"
+                },
+                "event_date": "2020-01-25T16:30:00+00:00",
+                "event_timestamp": 1579969800,
+                "firstHalfStart": null,
+                "secondHalfStart": null,
+                "round": "Regular Season - 21",
+                "status": "Not Started",
+                "statusShort": "NS",
+                "elapsed": 0,
+                "venue": "Orange Vélodrome (Marseille)",
+                "referee": null,
+                "homeTeam": {
+                    "team_id": 81,
+                    "team_name": "Marseille",
+                    "logo": "https://media.api-football.com/teams/81.png"
+                },
+                "awayTeam": {
+                    "team_id": 77,
+                    "team_name": "Angers",
+                    "logo": "https://media.api-football.com/teams/77.png"
+                },
+                "goalsHomeTeam": null,
+                "goalsAwayTeam": null,
+                "score": {
+                    "halftime": null,
+                    "fulltime": null,
+                    "extratime": null,
+                    "penalty": null
+                }
+            },
+      ```
