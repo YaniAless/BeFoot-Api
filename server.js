@@ -50,7 +50,10 @@ app.get('/standing/:leagueId', (req, res) => {
         var apiArray = api.api
         var standing = apiArray.standings
         var standingArray = standing[0]
-
+        var standings = {}
+        standings.teams = []
+        
+        //var standings = []
         for(var i = 0; i < 20; i++)
         {
             var teamRank = standingArray[i].rank
@@ -59,10 +62,11 @@ app.get('/standing/:leagueId', (req, res) => {
             var teamPoints = standingArray[i].points
             var teamGoalDiff = standingArray[i].goalsDiff
             
-            var team = JSON.stringify({teamRank, teamName, teamLogo, teamPoints, teamGoalDiff})
-            console.log(team)
-        }
+            var team = JSON.parse(JSON.stringify({teamRank, teamName, teamLogo, teamPoints, teamGoalDiff}))
 
+            standings.teams.push(team)
+        }
+        res.send(standings)
     });
 })
 
