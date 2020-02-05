@@ -9,7 +9,7 @@ const PORT = 3000;
 var app = express()
 
 app.get('/', (req,res) => {
-    res.send("Hello World")
+    res.send("Allez l'OM")
 })
 
 app.get('/league/:leagueId', (req, res) => {
@@ -29,11 +29,36 @@ app.get('/match/:leagueId/:date', (req, res) => {
     
     request(options,(err,response,body) => {
 
-        let matches = JSON.parse(body);
-        //let imgHint = matches['indice'];
-        //singularImage = singularImage['nomImg'];
+        var api = JSON.parse(body);
+        var apiArray = api.api
+        var fixturesArray = apiArray.fixtures
+        var nbResults = apiArray.results
+        var matches = {}
+        matches.fixtures = []
+        
+        //var standings = []
+        for(var i = 0; i <= nbResults; i++)
+        {
+            var matchDate = fixturesArray[i].event_date
+            
+            //Home Team
+            var homeTeamObject = fixturesArray[i].homeTeam
+            var homeTeamName = homeTeamObject.team_name
+            var homeTeamLogo = homeTeamObject.logo
+            var homeTeamScore = fixturesArray[i].goalsHomeTeam
+            
+            //Away Team
+            var awayTeamObject = fixturesArray[i].awayTeam
+            var awayTeamName = awayTeamObject.team_name
+            var awayTeamLogo = awayTeamObject.logo
+            var awayTeamScore = fixturesArray[i].goalsAwayTeam
+            
+            var match = JSON.parse(JSON.stringify({matchDate, homeTeamName, homeTeamLogo, homeTeamScore, awayTeamName, awayTeamLogo, awayTeamScore}))
 
-        res.send(body)      
+            matches.fixtures.push(match)
+        }
+
+        res.send(matches)      
         
     });
 })
@@ -81,6 +106,8 @@ app.get('/topscorers/:leagueId', (req, res) => {
         var api = JSON.parse(body);
         var apiArray = api.api
         var topscorersArray = apiArray.topscorers
+        var standings = {}
+        standings.players = []
 
         for(let i = 0; i < 20; i++)
         {
@@ -91,10 +118,11 @@ app.get('/topscorers/:leagueId', (req, res) => {
             var gamesObject = topscorersArray[i].games
             var nbGames = gamesObject.appearences
 
-            var player = JSON.stringify({playerName, goals, assists, nbGames})
-            var players = []
-            console.log(player)
+            var player = JSON.parse(JSON.stringify({playerName, goals, assists, nbGames}))
+
+            standings.players.push(player)
         }
+        res.send(standings)
         
     });
 })
