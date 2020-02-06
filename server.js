@@ -1,10 +1,10 @@
 const express = require('express')
 const request = require('request')
-const key = require('./key.js')
+const dotenv = require('dotenv').config()
 
 
-const API_KEY = key.getKey()
-const PORT = 3000;
+const API_KEY = process.env.FOOTBALL_API_KEY
+const PORT = process.env.PORT || 3000;
 
 var app = express()
 
