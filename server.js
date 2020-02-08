@@ -32,14 +32,14 @@ app.get('/match/:leagueId/:date', (req, res) => {
         var api = JSON.parse(body);
         var apiArray = api.api
         var fixturesArray = apiArray.fixtures
-        var nbResults = apiArray.results
         var matches = {}
         matches.fixtures = []
         
         //var standings = []
-        for(var i = 0; i <= nbResults; i++)
+        for(var i = 0; i < fixturesArray.length; i++)
         {
             var matchDate = fixturesArray[i].event_date
+            var fixtureId = fixturesArray[i].fixture_id
             
             //Home Team
             var homeTeamObject = fixturesArray[i].homeTeam
@@ -53,7 +53,7 @@ app.get('/match/:leagueId/:date', (req, res) => {
             var awayTeamLogo = awayTeamObject.logo
             var awayTeamScore = fixturesArray[i].goalsAwayTeam
             
-            var match = JSON.parse(JSON.stringify({matchDate, homeTeamName, homeTeamLogo, homeTeamScore, awayTeamName, awayTeamLogo, awayTeamScore}))
+            var match = JSON.parse(JSON.stringify({fixtureId, matchDate, homeTeamName, homeTeamLogo, homeTeamScore, awayTeamName, awayTeamLogo, awayTeamScore}))
 
             matches.fixtures.push(match)
         }
@@ -75,11 +75,12 @@ app.get('/standing/:leagueId', (req, res) => {
         var apiArray = api.api
         var standing = apiArray.standings
         var standingArray = standing[0]
+        var nbResults = apiArray.results
         var standings = {}
         standings.teams = []
         
         //var standings = []
-        for(var i = 0; i < 20; i++)
+        for(var i = 0; i < standingArray.length; i++)
         {
             var teamRank = standingArray[i].rank
             var teamName = standingArray[i].teamName
@@ -109,7 +110,7 @@ app.get('/topscorers/:leagueId', (req, res) => {
         var standings = {}
         standings.players = []
 
-        for(let i = 0; i < 20; i++)
+        for(let i = 0; i < topscorersArray.length; i++)
         {
             var playerName = topscorersArray[i].player_name
             var goalsObject = topscorersArray[i].goals
@@ -123,6 +124,63 @@ app.get('/topscorers/:leagueId', (req, res) => {
             standings.players.push(player)
         }
         res.send(standings)
+        
+    });
+})
+
+//API call to get the odds of a match (param : fixtureId)
+app.get('/odds/:fixtureId', (req, res) => {
+    var fixtureId = req.params.fixtureId
+    
+    let options = { url: "https://api-football-v1.p.rapidapi.com/v2/odds/fixture/" + fixtureId +"/bookmaker/6", headers: {'X-RapidAPI-Key':  API_KEY} };
+
+    request(options,(err,response,body) => {
+
+        var api = JSON.parse(body);
+        var apiArray = api.api
+        var oddsArray = apiArray.odds
+        var oddsArray2 = oddsArray[0]
+        var bookmaker = oddsArray2.bookmakers
+        var bookmaker2 = bookmaker[0]
+        var bets = bookmaker2.bets
+        var bets2 = bets[0]
+        var betsValues = bets2.values
+        var homeOddObject = betsValues[0]
+        var homeOdd = homeOddObject.odd
+        var drawOddObject = betsValues[1]
+        var drawOdd = drawOddObject.odd
+        var awayOddObject = betsValues[2]
+        var awayOdd = awayOddObject.odd 
+        
+        var odds = {}
+        odds.odd = []
+
+        var odd = JSON.parse(JSON.stringify({homeOdd, drawOdd, awayOdd}))
+
+        odds.odd.push(odd)
+        res.send(odds)
+        
+    });
+})
+
+app.get('/prediction/:fixtureId', (req, res) => {
+    var fixtureId = req.params.fixtureId
+    
+    let options = { url: "https://api-football-v1.p.rapidapi.com/v2/odds/fixture/" + fixtureId +"/bookmaker/6", headers: {'X-RapidAPI-Key':  API_KEY} };
+
+    request(options,(err,response,body) => {
+
+        var api = JSON.parse(body);
+        var apiArray = api.api
+        var oddsArray = apiArray.odds
+        
+        var odds = {}
+        odds.odd = []
+
+        var odd = JSON.parse(JSON.stringify({homeOdd, drawOdd, awayOdd}))
+
+        odds.odd.push(odd)
+        res.send(odds)
         
     });
 })
