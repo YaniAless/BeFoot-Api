@@ -163,24 +163,29 @@ app.get('/odds/:fixtureId', (req, res) => {
     });
 })
 
-app.get('/prediction/:fixtureId', (req, res) => {
+app.get('/predictions/:fixtureId', (req, res) => {
     var fixtureId = req.params.fixtureId
     
-    let options = { url: "https://api-football-v1.p.rapidapi.com/v2/odds/fixture/" + fixtureId +"/bookmaker/6", headers: {'X-RapidAPI-Key':  API_KEY} };
+    let options = { url: "https://api-football-v1.p.rapidapi.com/v2/predictions/" + fixtureId, headers: {'X-RapidAPI-Key':  API_KEY} };
 
     request(options,(err,response,body) => {
 
         var api = JSON.parse(body);
         var apiArray = api.api
-        var oddsArray = apiArray.odds
+        var predictionsArray = apiArray.predictions
+        var predictionsArray2 = predictionsArray[0]
+        var comparison = predictionsArray2.comparison
+        var forme = comparison.forme
+        var homeForme = forme.home
+        var awayForme = forme.away
         
-        var odds = {}
-        odds.odd = []
+        var predictions = {}
+        predictions.prediction = []
 
-        var odd = JSON.parse(JSON.stringify({homeOdd, drawOdd, awayOdd}))
+        var prediction = JSON.parse(JSON.stringify({homeForme, awayForme}))
 
-        odds.odd.push(odd)
-        res.send(odds)
+        predictions.prediction.push(prediction)
+        res.send(predictions)
         
     });
 })
